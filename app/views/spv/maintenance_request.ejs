@@ -1,0 +1,294 @@
+<%- include('../partial/header')%>
+
+<body  style="background-image:url('../../img/logo-1.png');background-position: left bottom;;background-repeat: no-repeat;background-attachment: fixed;  background-size: 700px 700px;">
+    <%- include('../partial/navbar', {role:role, parent: "user"}) %>
+    <div class="container-fluid justify-content-center">
+        <div class="card" style="margin-top: 50px;">
+            <div class="card-body" >
+                <h2><b>Maintenance Requests</b></h2>
+                <br>
+                <%if(locals.message.messages !== undefined && locals.message.messages){%>
+                    <% console.log("msg", locals.message.messages[0]) %>
+                    <%if (locals.message.messages[0].success){%>
+                        <div class="alert alert-success alert-dismissible mt-0 mb-1" id="success-alert">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong>Success!</strong> <%= locals.message.messages[0].success %>
+                        </div>
+                        <br>
+                    <% }else if(locals.message.messages[0].error){ %>
+                        <% console.log("msg err", locals.message.messages[0].error) %>
+                        <div class="alert alert-warning alert-dismissible mt-0 mb-1" id="error-alert" role="alert">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong>Failed!</strong> <%= locals.message.messages[0].error %>
+                        </div>
+                        <br>
+                    <% } %>
+                <% } %>
+                <br>
+                <div class="table-responsive">
+                    <table id="list_request" class="table table-bordered" width="100%" >
+                        <thead class="text-center">
+                            <tr>
+                                <th >Nama Mesin</th>
+                                <th >Tipe Mesin</th>
+                                <th >Nomor Mesin</th>
+                                <th >Jenis Tindakan</th>
+                                <th >Tanggal Pengajuan</th>
+                                <th >Target Selesai</th>
+                                <th >Prioritas</th>
+                                <th >Status dari Mekanik</th>
+                                <th >Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-striped"> 
+                            <% if(data){ %>
+                                <% for(var i=0;i < data.length;i++){ %>
+                                    <tr>
+                                        <td class="text-center"> <%= data[i].nama %></td>
+                                        <td class="text-center"> <%= data[i].tipe %></td>
+                                        <td class="text-center"> <%= data[i].nomor %></td>
+                                        <% if(data[i].tindakan == 1){%>
+                                            <td class="text-center">Pergantian</td>
+                                        <% }else if(data[i].tindakan == 2){%>
+                                            <td class="text-center">Pemeriksaan</td>
+                                        <% }else if(data[i].tindakan == 3){%>
+                                            <td class="text-center">Pembersihan</td>
+                                        <% }else if(data[i].tindakan == 4){%>
+                                            <td class="text-center">Perbaikan</td>
+                                        <% }else{ %>
+                                            <td class="text-center">Pelumasan</td>
+                                        <% } %>
+
+                                        <td class="text-center"> <%= data[i].tanggal_pengajuan %></td>
+                                        <td class="text-center"> <%= data[i].target_selesai %></td>
+                                        <% if(data[i].prior == 1) { %>
+                                            <td class="text-center">Tinggi</td>
+                                        <% }else if(data[i].prior == 2) { %>
+                                            <td class="text-center">Sedang</td>
+                                        <% }else if(data[i].prior = 3) { %>
+                                            <td class="text-center">Rendah</td>
+                                        <% } %>
+                                        <% if(data[i].statusMekanik == 1) { %>
+                                            <td class="text-center" style="color: rgb(19, 204, 40);">Accepted</td>
+                                        <% }else if(data[i].statusMekanik == 2) { %>
+                                            <td class="text-center" style="color: red;">Rejected</td>
+                                        <% }else if(data[i].statusMekanik == 3) { %>
+                                            <td class="text-center" style="color: orangered;">On Hold</td>
+                                        <% }else if(data[i].statusMekanik == 4){ %>
+                                            <td class="text-center" style="color: orange;">In Progress</td>
+                                        <% }else if(data[i].statusMekanik == 5){ %>
+                                            <td class="text-center" style="color: rgb(9, 126, 48);">Finished</td>
+                                        <% }else { %>
+                                            <td class="text-center" style="color: gray;">Waiting for Approval</td>
+                                        <% } %>
+                                        <% if(data[i].statusMekanik == 5){ %>
+                                            <td class="text-center">  
+                                                <a href="/spv/maintenance_request/form_finalize/<%= data[i].id %>" class="btn btn-success data" id="btn-repair"  data-id="<%= data[i].id %>" >
+                                                    Form Finalize
+                                                </a>
+                                            </td>
+                                        <% }else{ %>
+                                            <td class="text-center">  
+                                                <a href="#" class="btn btn-primary data" title="Details" data-toggle="modal" data-target="#detailInfo" data-id="<%= data[i].id %>" >
+                                                    <i class="fas fa-info-circle" style="color: white;"
+                                                    tabindex="-1"></i> Details
+                                                </a>
+                                            </td>
+                                        <% } %>                                        
+                                    </tr>
+                                <% } %>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+          </div>
+    </div>
+
+    <div class="modal fade" id="detailInfo" tabindex="-1" role="dialog" aria-labelledby="ModalDetails" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalDetails"><b>Details</b></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" value="" id="idRequest">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="status" class="form-label">Status dari Mekanik</label>
+                           
+                            <input type="text" style="border:none; padding: 3px; font-weight: bold; background-color: white;" class="form-control" name="status" id="status" autocomplete="off" >
+                        </div>
+                        <div class="col-md-6" id="divReason">
+                            <label for="inputPassword4" class="form-label">Alasan Request tidak di approve</label>
+                            <input type="text" class="form-control" name="reason" id="reason" autocomplete="off" disabled>
+                        </div>
+    
+                        <div class="col-md-12">
+                            <label for="inputPassword4" class="form-label">Uraian Permintaan Pekerjaan/Catatan</label>
+                            <textarea name="uraian" id="uraian" cols="75" rows="2" style="padding: 10px;" disabled></textarea>
+                        </div>
+    
+                        <div class="col-md-12">
+                            <label for="inputPassword4" class="form-label">Permasalahan</label>
+                            <textarea name="permasalahan" id="permasalahan" style="padding: 10px;" cols="75" rows="2" disabled></textarea>
+                        </div>
+    
+                        <div class="col-md-12">
+                            <label for="inputPassword4" class="form-label">Nama Komponen, Nomor Komponen dan Material </label>
+                            <textarea name="nama_no" id="nama_no" style="padding: 10px;" cols="75" rows="2" disabled></textarea>
+                        </div>
+                        <br>
+                        <div class="col-md-12">
+                            <table class="table table-bordered table-responsive-lg" id="table_material" style="width:100%">
+                                <thead>
+                                    <tr class="table-active text-center">
+                                        <th class="align-middle">Peralatan & Material</th>
+                                        <th class="align-middle">Spesifikasi</th>
+                                        <th class="align-middle">Kuantitas</th>
+                                        <th class="align-middle" >Keterangan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="col-sm-3">
+                                            <input type="text" name="material" id="material" class="form-control"disabled/>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="spek" id="spek" class="form-control" disabled/>
+                                        </td>
+                                        <td class="col-sm-1">
+                                            <input type="number" name="qty" id="qty" class="form-control" disabled />
+                                        </td>
+                                        <td class="col-sm-3">
+                                            <input type="text" name="ket" id="ket" class="form-control" disabled />
+                                        </td>
+                                      </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partial/scriptlist'); %>
+    <script src="/js/axios.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var currentDate = new Date();
+            $("#divReason").hide()
+
+            $("#tanggal_pengajuan").datepicker({
+                dateFormat: 'yy-mm-dd',
+                maxDate: 0,
+                changeYear: true 
+            }).attr('readonly', 'readonly');
+            $("#tanggal_pengajuan").datepicker("setDate", currentDate);
+            
+            $("#target_selesai").datepicker({dateFormat: 'yy-mm-dd'});
+
+            $("#list_request").DataTable()
+
+            $('#detailInfo').on('hidden.bs.modal', function (e) {
+                // const dataEl = event.target;
+                // dataEl.dataset.id = 0;
+            })
+
+            $(".data").on("click", function(e){
+                const dataEl = event.target;
+
+                // console.log(dataEl.dataset.id)
+                axios.post('maintenance_request/ajax/getDetails/' + dataEl.dataset.id)
+                .then(function (response) {
+                    // console.log(response.data)
+                    var res = response.data.data
+                    // console.log(res.length)
+                    if(res.length > 0){
+                        // var row = 0;
+                        // console.log("res:", res[0])
+                        $("#uraian").val(res[0].uraian)
+                        $("#permasalahan").val(res[0].permasalahan)
+                        $("#nama_no").val(res[0].nama_no)
+                      
+
+                        if(res[0].status == 1){
+                            $("#status").val("Accepted")
+                            $("#status").css("color", "green")
+                            $("#divReason").hide()
+                        }else if(res[0].status == 2){
+                            $("#status").val("Rejected")
+                            $("#status").css("color", "red")
+                            $("#divReason").show()
+                            $("#reason").val(res[0].reason)
+                        }else if(res[0].status == 3){
+                            $("#status").val("On Hold")
+                            $("#status").css("color", "orangered")
+                            $("#divReason").show()
+                            $("#reason").val(res[0].reason)
+                        }else if(res[0].status == 4){
+                            $("#status").val("In Progress")
+                            $("#status").css("color", "orange")
+                            $("#divReason").hide()
+                        }else if(res[0].status == 5){
+                            $("#status").val("Finished")
+                            $("#status").css("color", "#0e6926")
+                            $("#divReason").hide()
+                        }else{
+                            $("#status").val("Waiting for Approval")
+                            $("#status").css("color", "blue")
+                            $("#divReason").hide()
+                        }
+
+                        // console.log("komponen:", res[0].dataKomponen)
+                        var komponen = res[0].dataKomponen
+
+                        // console.log("length komponen:", komponen.length)
+
+                        if(komponen.length > 1){
+                            for(var i=1;i< komponen.length;i++){
+                                // console.log("curr ress", komponen[i])
+                                if($("#material").val() == ""){
+                                    $('#table_material').find('tbody').append('<tr id="material-row'+ i +'"><td class="col-sm-4"><input type="text" name="material" id="material" value="'+ komponen[i].peralatan +'" class="form-control" disabled autocomplete="off" /></td><td><input type="text" name="spek" id="spek" class="form-control" autocomplete="off" disabled value="'+komponen[i].spek+'" /></td><td class="col-sm-2"><input type="text" name="qty" id="qty" class="form-control" disabled autocomplete="off" value="'+komponen[i].qty+'" /></td><td class="col-sm-2"><input type="text" name="ket" id="ket" autocomplete="off" value="'+komponen[i].ket+'" class="form-control" disabled /></td></tr>');
+                                }
+                                $("#material").val(komponen[0].peralatan);
+                                $("#spek").val(komponen[0].spek);
+                                $("#qty").val(komponen[0].qty);
+                                $("#ket").val(komponen[0].ket);
+
+                                
+                            }
+                        }else if(komponen.length == 1){
+                            $("#material").val(komponen[0].peralatan);
+                            $("#spek").val(komponen[0].spek);
+                            $("#qty").val(komponen[0].qty);
+                            $("#ket").val(komponen[0].ket);
+                        }else{
+                            $("#material").val("");
+                            $("#spek").val("");
+                            $("#qty").val("");
+                            $("#ket").val("");
+                        }
+                       
+                    }
+                  
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+            })
+
+
+            $("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
+                $("#success-alert").slideUp(500);
+            });
+        })
+
+    </script>
+</body>

@@ -1,0 +1,154 @@
+<%- include('../partial/header')%>
+
+<body  style="background-image:url('../../img/logo-2.png');background-position: left bottom;;background-repeat: no-repeat;background-attachment: fixed;  background-size: 700px 700px;">
+    <%- include('../partial/navbar', {role:role, parent: "user"}) %>
+    <div class="container">
+        <div class="card" style="margin-top: 50px;">
+            <div class="card-body">
+                <h2><b>Request</b></h2>
+                <br> 
+                <form action="/karyawan/form/input" method="POST" class="row g-3">
+                    <div class="col-md-6">
+                        <label for="nama_mesin" class="form-label">Nama Mesin/Peralatan</label>
+                        <input type="text" class="form-control" name="nama_mesin" id="nama_mesin" autocomplete="off">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="inputPassword4" class="form-label">Tipe Mesin</label>
+                        <input type="text" class="form-control" name="tipe_mesin" id="tipe_mesin" autocomplete="off">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="inputPassword4" class="form-label">Nomor Mesin</label>
+                        <input type="text" class="form-control" name="nomor_mesin" id="nomor_mesin" autocomplete="off">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="jenisTindakan" class="form-label"> Jenis Tindakan</label>
+                        <select name="jenis_tindakan" id="jenis_tindakan" class="form-control chosen-select">
+                            <option value="0">--Select--</option>
+                            <option value="1">Pergantian</option>
+                            <option value="2">Pemeriksaan</option>
+                            <option value="3">Pembersihan</option>
+                            <option value="4">Perbaikan</option>
+                            <option value="5">Pelumasan</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="tanggal_pengajuan" class="form-label">Tanggal Pengajuan</label>
+                        
+                        <input type="text" class="form-control" name="tanggal_pengajuan" autocomplete="off" id="tanggal_pengajuan" readonly> 
+                    </div>
+                    <div class="col-md-4">
+                        <label for="target_selesai" class="form-label">Target Selesai</label>
+                        <!-- datepicker -->
+                        <input type="text" name="target_selesai" id="target_selesai" autocomplete="off" class="form-control" > 
+                    </div>
+                    <div class="col-md-4">
+                        <label for="prioritas" class="form-label"> Prioritas</label>
+                        <select name="prior" id="prior" class="form-control chosen-select">
+                            <option value="0">--Select--</option>
+                            <option value="1">Tinggi</option>
+                            <option value="2">Sedang</option>
+                            <option value="3">Rendah</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label for="uraian" class="form-label">Uraian Permintaan Pekerjaan/Catatan </label>
+                        <textarea class="form-control" name="uraian" id="uraian" cols="20" rows="2" autocomplete="off"></textarea>
+                    </div>
+                    <div class="col-12">
+                        <label for="permasalahan" class="form-label">Permasalahan </label>
+                        <textarea class="form-control" name="permasalahan" id="permasalahan" cols="20" rows="2" autocomplete="off"></textarea>
+                    </div>
+                    <div class="col-12">
+                        <label for="naam_no_material" class="form-label">Nama Komponen, Nomor Komponen dan Material</label>
+                        <textarea class="form-control" name="nama_no_material" id="nama_no_material" cols="20" rows="2" autocomplete="off"></textarea>
+                    </div>
+                    <!-- table kolom (Peralatan & Material), (Spesifikasi), (Kuantitas), (Keterangan) -->
+                    <!-- row bisa banyak -->
+                    <div class="col-12">
+                        <table class="table table-bordered table-responsive-lg" id="table_material" style="width:100%">
+                            <thead>
+                                <tr class="table-active text-center">
+                                    <th class="align-middle">Peralatan & Material</th>
+                                    <th class="align-middle">Spesifikasi</th>
+                                    <th class="align-middle">Kuantitas</th>
+                                    <th class="align-middle" >Keterangan</th>
+                                    <th class="align-middle" >Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="col-sm-3">
+                                        <input type="text" name="material" class="form-control" autocomplete="off"/>
+                                    </td>
+                                    <td>
+                                        <input type="text" name="spek" class="form-control" autocomplete="off"/>
+                                    </td>
+                                    <td class="col-sm-1">
+                                        <input type="number" name="qty" class="form-control" autocomplete="off" />
+                                    </td>
+                                    <td class="col-sm-3">
+                                        <input type="text" name="ket" class="form-control" autocomplete="off" />
+                                    </td>
+                                    <td class="col-sm-1">
+                                        <button type="button" id="addrow" onclick="childrenRow()" class="btn" > <i style="color: blue;" class="fas fa-plus-circle text-center"></i></button>
+                                        <!-- <button type="button"  class="btn" ><i style="color: red;" class="fas fa-minus-circle text-center"></i></button> -->
+                                    </td>
+                                  </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary md-block" style="width:100px;">Save</button>
+                        <button type="button" class="btn btn-primary md-block" style="width:100px;">Discard</button>
+                    </div>
+                </form>
+            </div>
+          </div>
+    </div>
+
+    <script type="text/javascript" charset="utf8" src="/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="/js/popper.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="/js/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="/js/moment-with-locales.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="/js/dataTables.rowReorder.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="/js/responsive.bootstrap4.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="/js/moment.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="/js/jquery-ui1121.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="/js/popper.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="/js/bootstrap431.min.js"></script>
+    <script src="/js/jquery.nicescroll.min.js"></script>
+    <script src="/js/moment224.min.js"></script>
+    <script src="/js/jquery.dataTables11019.min.js"></script>
+    <script src="/js/dataTables11019.bootstrap4.min.js"></script>
+    <script src="/js/jquery.validate.min.js"></script>
+    <script src="/js/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.js"></script>
+    <!-- <script type="text/javascript" charset="utf8"src="/js/jquery.datepick.js"></script> -->
+
+    <script type="text/javascript">
+        var i = 1;
+        var row = 0;
+        function childrenRow() {
+            i++;
+            $('#table_material').find('tbody').append('<tr id="material-row'+ row +'"><td class="col-sm-3"><input type="text" name="material" class="form-control" autocomplete="off" /></td><td><input type="text" name="spek" autocomplete="off" class="form-control" /></td><td class="col-sm-2"><input type="text" name="qty" autocomplete="off" class="form-control" /></td><td class="col-sm-2"><input type="text" name="ket" class="form-control" autocomplete="off" /></td><td><button type="button" id="addrow" onclick="childrenRow()" class="btn" > <i style="color: blue;" class="fas fa-plus-circle text-center"></i></button><button type="button" onclick="$(\'#material-row' + row + '\').remove();"  class="btn" ><i style="color: red;" class="fas fa-minus-circle text-center"></i></button></td></tr>');
+            row++;
+        }
+
+        $(document).ready(function(){
+            var currentDate = new Date();
+
+            $("#tanggal_pengajuan").datepicker({
+                dateFormat: 'yy-mm-dd',
+                maxDate: 0,
+                changeYear: true 
+            }).attr('readonly', 'readonly');
+            $("#tanggal_pengajuan").datepicker("setDate", currentDate);
+            
+            $("#target_selesai").datepicker({dateFormat: 'yy-mm-dd'});
+        })
+
+    </script>
+</body>

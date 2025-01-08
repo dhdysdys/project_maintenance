@@ -1,0 +1,91 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container px-lg-5">
+      <% if(user.role == 2){%>
+        <a class="navbar-brand" href="/karyawan/dashboard"><b><h3>Maintenance</h3></b></a>
+      <% }else if(user.role == 1){%>
+        <a class="navbar-brand" href="/spv/dashboard"><b><h3>Maintenance</h3></b></a>
+      <% }else {%>
+        <a class="navbar-brand" href="/mekanik/dashboard"><b><h3>Maintenance</h3></b></a>
+      <% }%>
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <% if(user.role == 2){%>
+          <ul class="navbar-nav me-auto mb-3 mb-lg-0">
+              <li class="nav-item">
+                  <a class="nav-link" href="/karyawan/maintenance_request">Maintenance Request</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="/karyawan/calendar">Maintenance Calendar</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="/karyawan/history">History</a>
+              </li>
+          </ul>
+          <ul class="navbar-nav mb-2 mb-lg-0">
+              <li class="nav-item dropdown">
+                  <a  class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                      <span class="mr-2 d-none d-lg-inline text-600 small"><i 
+                          class="fas fa-user"></i>&nbsp &nbsp <b><%- user.name %></b></span>
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <li><a class="dropdown-item" href="/auth/logout">Logout</a></li>
+                  
+                  </ul>
+                </li>
+          </ul>
+        <% }else if(user.role == 1){%>
+          <ul class="navbar-nav me-auto mb-3 mb-lg-0">
+            <li class="nav-item">
+                <a class="nav-link" href="/spv/maintenance_request">Maintenance Request</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/spv/calendar">Maintenance Calendar</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/spv/history">History</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+                <a  class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                    <span class="mr-2 d-none d-lg-inline text-600 small"><i 
+                        class="fas fa-user"></i>&nbsp &nbsp <b><%- user.name %></b></span>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  <li><a class="dropdown-item" href="/auth/logout">Logout</a></li>
+                
+                </ul>
+              </li>
+        </ul>
+        <% }else {%>
+          <ul class="navbar-nav me-auto mb-3 mb-lg-0">
+            <li class="nav-item">
+                <a class="nav-link" href="/mekanik/maintenance_request">Maintenance Request</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/mekanik/calendar">Maintenance Calendar</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/mekanik/history">History</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+                <a  class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                    <span class="mr-2 d-none d-lg-inline text-600 small"><i 
+                        class="fas fa-user"></i>&nbsp &nbsp <b><%- user.name %></b></span>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  <li><a class="dropdown-item" href="/auth/logout">Logout</a></li>
+                
+                </ul>
+              </li>
+        </ul>
+        <% }%>
+       
+      </div>
+    </div>
+</nav>

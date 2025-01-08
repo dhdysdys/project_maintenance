@@ -1,0 +1,250 @@
+<%- include('../partial/header')%>
+
+<body  style="background-image:url('../../img/logo-2.png');background-position: left bottom;;background-repeat: no-repeat;background-attachment: fixed;  background-size: 700px 700px;">
+    <%- include('../partial/navbar', {role:role, parent: "user"}) %>
+    <div class="container">
+        <div class="card" style="margin-top: 50px; margin-bottom: 50px;">
+            <div class="card-body">
+                <center><h2><b>Finish Request Form</b></h2></center>
+                <br> 
+                <form action="/mekanik/maintenance_request/submit" method="POST" class="row g-3">
+                    <input type="hidden" id="id" name="id" value="<%= data[0].id%>">
+                    <% if(data) {%>
+                    <div class="col-md-6">
+                        <label for="nama_mesin" class="form-label">Nama Mesin/Peralatan</label>
+                        <input type="text" class="form-control" name="nama_mesin" id="nama_mesin"  autocomplete="off" value="<%= data[0].nama%>" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="inputPassword4" class="form-label">Tipe Mesin</label>
+                        <input type="text" class="form-control" name="tipe_mesin" id="tipe_mesin" autocomplete="off" value="<%= data[0].tipe%>" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="inputPassword4" class="form-label">Nomor Mesin</label>
+                        <input type="text" class="form-control" name="nomor_mesin" id="nomor_mesin" autocomplete="off" value="<%= data[0].nomor%>" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="jenisTindakan" class="form-label"> Jenis Tindakan</label>
+                        <select name="jenis_tindakan"  id="jenis_tindakan" class="form-control" readonly>
+                            <!-- <option value="0">--Select--</option> -->
+                            <% if(data[0].tindakan == 1){%>
+                                <option value="1">Pergantian</option>
+                            <% }else if(data[0].tindakan == 2){%>
+                                <option value="2">Pemeriksaan</option>
+                            <% }else if(data[0].tindakan == 3){%>
+                                <option value="3">Pembersihan</option>
+                            <% }else if(data[0].tindakan == 4){%>
+                                <option value="4">Perbaikan</option>
+                            <% }else if(data[0].tindakan == 5){%>
+                                <option value="5">Pelumasan</option>
+                            <% }%>    
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="tanggal_pengajuan" class="form-label">Tanggal Pengajuan</label>
+                        
+                        <input type="text" class="form-control" name="tanggal_pengajuan" autocomplete="off" id="tanggal_pengajuan" value="<%= data[0].tanggal_pengajuan%>" readonly> 
+                    </div>
+                    <div class="col-md-4">
+                        <label for="target_selesai" class="form-label">Target Selesai</label>
+                        <!-- datepicker -->
+                        <input type="text" name="target_selesai" id="target_selesai" autocomplete="off" class="form-control" value="<%= data[0].target_selesai%>" readonly> 
+                    </div>
+                    <div class="col-md-4">
+                        <label for="prioritas" class="form-label"> Prioritas</label>
+                        <select name="prior" id="prior" class="form-control" readonly>
+                            <% if(data[0].prior == 1){%>
+                                <option value="1">Tinggi</option>
+                            <% }else if(data[0].prior == 2){%>
+                                <option value="2">Sedang</option>
+                            <% }else if(data[0].prior == 3){%>
+                                <option value="3">Rendah</option>
+                            <% }%>   
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label for="uraian" class="form-label">Uraian Permintaan Pekerjaan/Catatan </label>
+                        <textarea class="form-control" name="uraian" id="uraian" cols="20" rows="2" autocomplete="off" placeholder="<%= data[0].uraian %>" value="<%= data[0].uraian %>" readonly></textarea>
+                    </div>
+                    <div class="col-12">
+                        <label for="permasalahan" class="form-label">Permasalahan </label>
+                        <textarea class="form-control" name="permasalahan" id="permasalahan" cols="20" rows="2" placeholder="<%= data[0].permasalahan %>" autocomplete="off" value="<%= data[0].permasalahan%>" readonly></textarea>
+                    </div>
+                    <% if(data[0].uraianDb == null){ %>
+                    <div class="col-12">
+                        <label for="uraian" class="form-label">Uraian Pelaksanaan Pekerjaan & Peralatan/Material yang digunakan </label>
+                        <textarea class="form-control" name="uraianMekanik" id="uraianMekanik" cols="20" rows="2" autocomplete="off"  ></textarea>
+                    </div>
+                    <% }else {%>
+                        <div class="col-12">
+                            <label for="uraian" class="form-label">Uraian Pelaksanaan Pekerjaan & Peralatan/Material yang digunakan </label>
+                            <textarea class="form-control" name="uraianMekanik" id="uraianMekanik" placeholder="<%= data[0].uraianDb %>" cols="20" rows="2" autocomplete="off" readonly ></textarea>
+                        </div>
+                    <% }%>       
+                    <div class="col-12">
+                        <label for="naam_no_material" class="form-label">Nama Komponen, Nomor Komponen dan Material</label>
+                        <textarea class="form-control" name="nama_no_material" id="nama_no_material" cols="20" rows="2" autocomplete="off" placeholder="<%= data[0].nama_no %>" readonly value="<%= data[0].nama_no%>"></textarea>
+                    </div>
+                    <!-- table kolom (Peralatan & Material), (Spesifikasi), (Kuantitas), (Keterangan) -->
+                    <!-- row bisa banyak -->
+                    <div class="col-12">
+                        <table class="table table-bordered table-responsive-lg" id="table_material" style="width:100%">
+                            <thead>
+                                <tr class="table-active text-center">
+                                    <th class="align-middle">Peralatan & Material</th>
+                                    <th class="align-middle">Spesifikasi</th>
+                                    <th class="align-middle">Kuantitas</th>
+                                    <th class="align-middle" >Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if(data[0].dataKomponen.length > 0){ %>
+                                    <% for(var i=0; i < data[0].dataKomponen.length;i++){ %>
+                                    <tr>
+                                        <td class="col-sm-3">
+                                            <input type="text" name="material" class="form-control" autocomplete="off" value="<%= data[0].dataKomponen[i].peralatan%>" readonly/>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="spek" class="form-control" autocomplete="off" value="<%= data[0].dataKomponen[i].spek%>" readonly/>
+                                        </td>
+                                        <td class="col-sm-1">
+                                            <input type="number" name="qty" class="form-control" autocomplete="off" value="<%= data[0].dataKomponen[i].qty%>" readonly/>
+                                        </td>
+                                        <td class="col-sm-3">
+                                            <input type="text" name="ket" class="form-control" autocomplete="off" value="<%= data[0].dataKomponen[i].ket%>" readonly />
+                                        </td>
+                                    </tr>
+                                    <% }%>
+                                <% }%>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <% if(data[0].durasi == null){ %>
+                    <div class="col-md-6">
+                        <label for="nama_mesin" class="form-label">Durasi (dalam jam)</label>
+                        <input type="text" class="form-control" name="durasi" id="durasi"  autocomplete="off" >
+                    </div>
+                    <div class="col-md-6">
+                        <label for="inputPassword4" class="form-label">Jumlah Tenaga Kerja</label>
+                        <input type="text" class="form-control" name="manpower" id="manpower" autocomplete="off">
+                    </div>
+                    <div class="col-12">
+                        <table class="table table-bordered table-responsive-lg" id="table_material" style="width:100%">
+                            <!-- <thead>
+                                
+                            </thead> -->
+                            <tbody>
+                                <tr class="text-center">
+                                    <th class="align-middle table-secondary" >Biaya Tenaga Kerja</th>
+                                    <td class="col-sm-6">
+                                        <input type="text" name="biayaManpower" class="form-control" autocomplete="off" />
+                                    </td>
+                                    
+                                </tr>
+                                <tr class="text-center">
+                                    <th class="align-middle table-secondary">Biaya Perlatan & Material</th>
+                                    <td class="col-sm6">
+                                        <input type="text" name="biayaPeralatan" class="form-control" autocomplete="off" />
+                                    </td>
+                                    
+                                </tr>
+                                <tr class="text-center">
+                                    <th class="align-middle table-secondary">Total</th>
+                                    <td class="col-sm6">
+                                        <input type="text" name="total" class="form-control" autocomplete="off" />
+                                    </td>
+                                    
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <% }else {%>
+                        <div class="col-md-6">
+                            <label for="nama_mesin" class="form-label">Durasi (dalam jam)</label>
+                            <input type="text" value="<%= data[0].durasi %>" readonly class="form-control" name="durasi" id="durasi"  autocomplete="off" >
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inputPassword4" class="form-label">Jumlah Tenaga Kerja</label>
+                            <input type="text" class="form-control" readonly value="<%= data[0].jmlM %>" name="manpower" id="manpower" autocomplete="off">
+                        </div>
+                        <div class="col-12">
+                            <table class="table table-bordered table-responsive-lg" id="table_material" style="width:100%">
+                                <tbody>
+                                    <tr class="text-center">
+                                        <th class="align-middle table-secondary" >Biaya Tenaga Kerja</th>
+                                        <td class="col-sm-6">
+                                            <input type="text" name="biayaManpower" class="form-control" readonly value="<%= data[0].biayaM %>" autocomplete="off" />
+                                        </td>
+                                        
+                                    </tr>
+                                    <tr class="text-center">
+                                        <th class="align-middle table-secondary">Biaya Perlatan & Material</th>
+                                        <td class="col-sm6">
+                                            <input type="text" readonly value="<%= data[0].biayaP %>" name="biayaPeralatan" class="form-control" autocomplete="off" />
+                                        </td>
+                                        
+                                    </tr>
+                                    <tr class="text-center">
+                                        <th class="align-middle table-secondary">Total</th>
+                                        <td class="col-sm6">
+                                            <input type="text" readonly value="<%= data[0].total %>" name="total" class="form-control" autocomplete="off" />
+                                        </td>
+                                        
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% }%>     
+                    <br><br>
+                    <div class="col-md-4"> 
+                        <center>
+                            <label for="nama_mesin" class="form-label">Dibuat Oleh</label>
+                            <br><br><br>
+                            <input type="text" class="form-control" name="creator" id="creator"  autocomplete="off" style="border:none; font-weight: bold; background-color: white;text-align: center" value="<%= data[0].requestUser%>" readonly>
+                        </center>
+                       
+                    </div>
+                    <div class="col-md-4">
+                        <center>
+                            <label for="inputPassword4" class="form-label">Disetujui Oleh</label><br><br><br>
+                            <input type="text" class="form-control" name="approver" id="approver" autocomplete="off" style="border:none; font-weight: bold; background-color: white;text-align: center" value="<%= data[0].approver%>" readonly>
+                        </center>
+                       
+                    </div>
+                    <div class="col-md-4">
+                        <center>
+                            <label for="inputPassword4" class="form-label">Dikerjakan Oleh</label><br><br><br>
+                            <input type="text" class="form-control" name="repairBy" id="repairBy" autocomplete="off" style="border:none;  font-weight: bold; background-color: white;text-align: center;" value="<%= data[0].repairedBy%>" readonly>
+                        </center>
+                       
+                    </div>
+                    
+                    <% if(data[0].durasi == null){ %>
+                    <center>
+                        <div class="col-12" style="margin-top: 20px;">
+                            <button type="submit" class="btn btn-primary md-block" style="width:100px;">Submit</button>
+                        </div>
+                    </center>
+                    <% }else{ %>
+                        <div class="col-12" style="margin-top: 20px;">
+                            <button type="submit" class="btn btn-primary md-block" style="width:100px;" hidden>Submit</button>
+                        </div>
+                    <% } %>
+                    
+                    <% } %>
+                </form>
+            </div>
+          </div>
+    </div>
+
+    <%- include('../partial/scriptlist'); %>
+    <script src="/js/axios.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+          
+            
+        })
+
+    </script>
+</body>
