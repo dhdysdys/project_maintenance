@@ -1,0 +1,88 @@
+<%- include('../partial/header')%>
+
+<body  style="background-image:url('../../img/logo-4.png');background-position: left bottom;;background-repeat: no-repeat;background-attachment: fixed;  background-size: 600px 600px;">
+    <%- include('../partial/navbar', {role:role, parent: "user"}) %>
+    <div class="container">
+        <div class="card" style="margin-top: 50px;">
+            
+            <div class="card-body" >
+                <div id="calendar">
+
+                </div>
+            </div>
+        </div>
+    </div>
+   
+</body>
+
+<%- include('../partial/scriptlist'); %>
+<script src="/js/axios.min.js"></script>
+
+
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        $('#calendar').fullCalendar({
+            plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
+            selectable: true,
+            editable: true,
+            events: function(start, end, timezone, callback){
+                $.ajax({
+                    url:"calendar/ajax/getEvent",
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function(res){
+                        // console.log("Res", res.data)
+                        var events = [];
+                        
+                        if(res.data){
+                            // console.log("masuk sini")
+                            $.map( res.data, function( r ) {
+                                if(r.status == 5 && r.tanggalFinish != ""){
+                                    events.push({
+                                        id: r.id,
+                                        title: r.title,
+                                        description: r.desc,
+                                        start: r.tanggalFinish,
+                                        end: r.tanggalFinish,
+                                        color: '#73b564',
+                                        textColor: "#000"
+                                    });
+                                    
+                                }else if(r.status == 3){
+                                    events.push({
+                                        id: r.id,
+                                        title: r.title,
+                                        description: r.desc,
+                                        start: r.targetSelesai,
+                                        end: r.targetSelesai,
+                                        color: '#d9ac1a'
+                                    });
+                                }else if(r.status == 4){
+                                    events.push({
+                                        id: r.id,
+                                        title: r.title,
+                                        description: r.desc,
+                                        start: r.targetSelesai,
+                                        end: r.targetSelesai,
+                                        color: '#1abcd9'
+                                    });
+                                }
+                               
+
+                                console.log("title", r.title)
+                            });
+                        }
+
+                        console.log(events)
+                        callback(events);
+                    }
+                })
+            }
+        })
+
+        $("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
+            $("#success-alert").slideUp(500);
+        });
+    })
+</script>
